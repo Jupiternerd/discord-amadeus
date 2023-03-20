@@ -9,7 +9,7 @@ import winston from "winston"
 export default class AmadeusClient extends Client {
     // internal variables
     public scripts = new Collection<string, Script>();
-    public static scriptPrompt: string = "Allowed actions:";
+    public static scriptPrompt: string = "Allowed programmatic_command:";
     private _token: string;
     private _owner_id: string;
 

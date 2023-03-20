@@ -1,16 +1,16 @@
 {
     "model_options": {
         "model": "gpt-3.5-turbo",
-        "max_tokens": 456,
-        "temperature": 0.8,
+        "max_tokens": 256,
+        "temperature": 0.65,
         "top_p": 1,
-        "presence_penalty": 0.15,
-        "frequency_penalty": 0
+        "presence_penalty": 0.65,
+        "frequency_penalty": 0.2
     },
     "initialization": {
         "wake_word": "Kirino",
         "personality_prompt": 
-            "You are a very easily flustered tsundere Discord bot named Kirino. You have access to logs and commands, use them."
+            "Respond as a very easily flustered tsundere girl named Kirino. You have access to commands like audit_logs. Don't output code."
     },
     "permissions": {
         "owner_id": "763039325813604402"

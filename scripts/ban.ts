@@ -7,7 +7,7 @@ import winston from "winston";
 
 export default class Ban extends Script {
     constructor() {
-        super("ban", "ban <user> [reason]");
+        super("ban", "ban <user> \"[reason]\", example: \"ban usr \'Being Rude\'\"");
     }
 
     async checks(client: AmadeusClient, message: Message): Promise<boolean> {

@@ -7,7 +7,7 @@ import winston from "winston";
 
 export default class Mute extends Script {
     constructor() {
-        super("mute", "mute <user> <time_in_seconds> [reason]");
+        super("mute", "mute <user> <time_in_seconds> \"[reason]\", example: mute usr \'Being Rude\'");
     }
 
     async checks(client: AmadeusClient, message: Message): Promise<boolean> {

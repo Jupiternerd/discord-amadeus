@@ -8,9 +8,9 @@ export default class OpenAPI {
     public static systemPrompt: string = (config.initialization.personality_prompt.length > 0 ? config.initialization.personality_prompt :
         "Personality: You are a student named \"Yui\". You respond like a Yandere. ") +
         // Required for the bot to work 
-        "{} = required [] = optional. Respond ONLY in this JSON format:\n" +
+        "Only respond in this JSON format:\n " +
         "{\"response\": \"{required_response_text}\"" +
-        "\"actions\": [\"{required_action_type} [action_args]\"]}"
+        "\"programmatic_command\": [\"{required_action_type} [action_args]\"]}"
 
     /**
      * @name login
@@ -47,19 +47,24 @@ export default class OpenAPI {
         Promise<CreateChatCompletionResponse> {
 
             console.log(messages)
-        const response = await api.createChatCompletion({
-            "model": options.model,
-            "messages": [
-                {
-                    "role": "system",
-                    "name": "System",
-                    "content": OpenAPI.systemPrompt,
-                }, 
-                ...messages
-            ],
-            ...options
-        });
-        return response.data;
+            try {
+                const response = await api.createChatCompletion({
+                    "model": options.model,
+                    "messages": [
+                        {
+                            "role": "system",
+                            "name": "System",
+                            "content": OpenAPI.systemPrompt,
+                        },
+                        ...messages
+                    ],
+                    ...options
+                });
+                return response.data;
+            } catch (e) {
+                winston.log("fatal", e);
+                return null;
+            }
     }
 }
 

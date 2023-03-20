@@ -27,15 +27,16 @@ export default class messageCreateListener extends AmadeusListener {
         Cache.bucket.set("channel_" + channelId, conversation);
         return conversation;
     }
-
+    
     static isAwaitingResponse(channelId: string) {
-        return Cache.bucket.has("awaiting_response_" + channelId);
+        return Cache.bucket.get("awaiting_response_" + channelId);
     }
 
     static setAwaitingResponse(channelId: string, value: boolean) {
         if (value) Cache.bucket.set("awaiting_response_" + channelId, true);
         else Cache.bucket.del("awaiting_response_" + channelId);
     }
+    
 
     async execute(client: AmadeusClient, message: Message): Promise<any> {
         if (message.content.startsWith("//")) return;
@@ -47,12 +48,12 @@ export default class messageCreateListener extends AmadeusListener {
         if (message.content.includes("stop_convo")) {
             Cache.bucket.del("awaiting_response_" + message.channel.id)
             Cache.bucket.del("channel_" + message.channel.id);
-            return;
+            return message.reply("SYSTEM: Conversation stopped.");
         }
         console.log(message.content)
         if (message.author.bot) return;
         const channel = message.channel;
-        if (messageCreateListener.isAwaitingResponse(channel.id)) return;
+        //if (messageCreateListener.isAwaitingResponse(channel.id)) return;
         if ((await messageCreateListener.getConversation(channel.id)
             || message.content.toLowerCase().includes(config.initialization.wake_word.toLowerCase()))) return this.handleMessage(client, message);
     }
@@ -95,8 +96,8 @@ export default class messageCreateListener extends AmadeusListener {
         if (!conversation) {
             
             conversation = messageCreateListener.setConversation(message.channel.id, [{
-                // the allowed script actions
-                content: this.formatSystemMessage(AmadeusClient.scriptPrompt + " " + "Discord AuditLog String ID ex: GUILDUPDATE"),
+                // the allowed script programmatic_command
+                content: this.formatSystemMessage(AmadeusClient.scriptPrompt + " " + "Discord AuditLog Int ID ex: 20 for MemberKick"),
                 role: "system",
                 name: "System"
             },
@@ -118,25 +119,23 @@ export default class messageCreateListener extends AmadeusListener {
         }
         
         // set the awaiting response to true
-        messageCreateListener.setAwaitingResponse(message.channel.id, true);
+        //messageCreateListener.setAwaitingResponse(message.channel.id, true);
         // send the message to openai
         const response = await OpenAPI.getCompletion(conversation);
         console.log(response.choices[0].message.content)
         return messageCreateListener.handleResponse(message.channel.id, client, message, response);
     }
 
-    static async handleActionScripts(client: AmadeusClient, message: Message, response: {
+    static async handleProgrammaticCommand(client: AmadeusClient, message: Message, response: {
         response: string,
-        actions: string[]
+        programmatic_command: string[]
     }) {
-        const { response: responseMsg, actions: scripts } = response;
+        const { response: responseMsg, programmatic_command: scripts } = response;
         if (!scripts || scripts?.length <= 0) return;
         // run the scripts
         for (const script of scripts) {
             try {
-                console.log(script)
                 let args = Script.parseArgs(script)
-                console.log(args)
                 const command = args.shift();
                 const scriptInstance = client.scripts.get(command);
                 if (!scriptInstance) continue;
@@ -169,7 +168,7 @@ export default class messageCreateListener extends AmadeusListener {
         try {
             const ret: {
                 response: string,
-                actions: string[]
+                programmatic_command: string[]
             } = JSON.parse(responseMsg.content);
 
             // add the response to the conversation
@@ -179,7 +178,7 @@ export default class messageCreateListener extends AmadeusListener {
             messageCreateListener.setConversation(channelId, conversation);
 
             // action scripts
-            await messageCreateListener.handleActionScripts(client, message, ret);
+            await messageCreateListener.handleProgrammaticCommand(client, message, ret);
 
             // set the awaiting response to false
             messageCreateListener.setAwaitingResponse(channelId, false);
