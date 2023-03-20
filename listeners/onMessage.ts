@@ -37,7 +37,6 @@ export default class messageCreateListener extends AmadeusListener {
         else Cache.bucket.del("awaiting_response_" + channelId);
     }
     
-
     async execute(client: AmadeusClient, message: Message): Promise<any> {
         if (message.content.startsWith("//")) return;
         if (message.content.startsWith("force_convo")) {
@@ -142,6 +141,7 @@ export default class messageCreateListener extends AmadeusListener {
                 if (scriptInstance.checks(client, message)) await scriptInstance.execute(client, message, args);
                 else { throw Error("Failed check user: " + message.author + " script: " + command);}
             } catch (e) {
+                console.log(e)
                 winston.error(e);
             }
         }

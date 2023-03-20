@@ -16,9 +16,10 @@ export default class Mute extends Script {
     }
 
     async execute(client: AmadeusClient, message: Message, ...args: any): Promise<any> {
-        const user = await message.guild.members.fetch(args[0]);
+        let users = await message.guild.members.fetch();
+        let user = users.find(i => (i.user.username === args[0][0]) || (i.user.id === args[0][0]));
         if (!user) return winston.log("error", "No user provided, check the json response.")
-        const time = parseInt(args[1]) || 120;
+        const time = parseInt(args[0][1]) || 120;
         const reason = args.slice(1).join(" ") || "No reason provided";
         await user.timeout(time, reason);
         message.channel.send(`SYSTEM: Muted ${user.user.tag} for ${reason}`)
