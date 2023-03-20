@@ -1,11 +1,15 @@
 {
   "dependencies": {
     "@nlpjs/basic": "^4.26.1",
+    "discord.js": "^14.8.0",
     "dotenv": "^16.0.3",
+    "gpt-3-encoder": "^1.1.4",
     "natural": "^6.2.0",
-    "openai": "^3.2.1"
+    "node-cache": "^5.1.2",
+    "openai": "^3.2.1",
+    "winston": "^3.8.2"
   },
-  "type": "module",
+  "main": "app.js",
   "devDependencies": {
     "@types/node": "^18.15.3"
   }

@@ -1,0 +1,27 @@
+{
+    "model_options": {
+        "model": "gpt-3.5-turbo",
+        "max_tokens": 456,
+        "temperature": 0.8,
+        "top_p": 1,
+        "presence_penalty": 0.15,
+        "frequency_penalty": 0
+    },
+    "initialization": {
+        "wake_word": "Kirino",
+        "personality_prompt": 
+            "You are a very easily flustered tsundere Discord bot named Kirino. You have access to logs and commands, use them."
+    },
+    "permissions": {
+        "owner_id": "763039325813604402"
+    },
+    "limits": {
+        "max_message_token_limit": 366,
+        "max_convo_length": 40,
+        "max_convo_token_limit": 20000
+    },
+    "caching": {
+        "ttl": 18000,
+        "checkPeriod": 120
+    }
+}
